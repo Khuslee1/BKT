@@ -1,26 +1,180 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap");
+
 @import "tailwindcss";
 
+@theme {
+  --color-gold:           #c9902a;
+  --color-gold-light:     #e8a83a;
+  --color-gold-pale:      #f0c96a;
+  --color-black:          #17130e;
+  --color-charcoal:       #231e12;
+  --color-charcoal-mid:   #2e2819;
+  --color-charcoal-light: #3f3424;
+  --color-ash:            #6c5f4c;
+  --color-stone:          #9c8e76;
+  --color-parchment:      #f5ebce;
+  --color-parchment-dark: #ddd0b0;
+  --color-warm-white:     #fdf7e8;
+  --color-cream:          #f5ede0;
+  --color-cream-dark:     #e6d9c5;
+  --color-dark-brown:     #3d2e18;
+
+  --font-display:   "Playfair Display", serif;
+  --font-sans:      "Barlow", sans-serif;
+  --font-condensed: "Barlow Condensed", sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gold:             #c9902a;
+  --gold-light:       #e8a83a;
+  --gold-pale:        #f0c96a;
+  --black:            #17130e;
+  --charcoal:         #231e12;
+  --charcoal-mid:     #2e2819;
+  --charcoal-light:   #3f3424;
+  --ash:              #6c5f4c;
+  --stone:            #9c8e76;
+  --parchment:        #f5ebce;
+  --parchment-dark:   #ddd0b0;
+  --warm-white:       #fdf7e8;
+  --cream:            #f5ede0;
+  --cream-dark:       #e6d9c5;
+  --dark-brown:       #3d2e18;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+* { box-sizing: border-box; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--black);
+  color: var(--parchment);
+  font-family: "Barlow", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
 }
+
+.font-display   { font-family: "Playfair Display", serif; }
+.font-condensed { font-family: "Barlow Condensed", sans-serif; }
+
+/* ── Gold divider line ─────────────────────── */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* ── Buttons ───────────────────────────────── */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--black);
+  transition: all 0.25s;
+  border: 1px solid var(--gold);
+}
+.btn-gold:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(201,144,42,0.3);
+}
+
+.btn-outline-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  transition: all 0.25s;
+  background: transparent;
+}
+.btn-outline-gold:hover {
+  background: var(--gold);
+  color: var(--black);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(201,144,42,0.2);
+}
+
+/* ── Eyebrow label ─────────────────────────── */
+.section-eyebrow {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── Cards ─────────────────────────────────── */
+.card-dark {
+  background: var(--charcoal);
+  border: 1px solid var(--charcoal-light);
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.card-dark:hover {
+  border-color: rgba(201,144,42,0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+
+/* ── Light cream section ───────────────────── */
+.section-cream {
+  background: var(--cream);
+  color: var(--dark-brown);
+}
+.section-cream .section-eyebrow {
+  color: var(--gold);
+}
+
+/* ── Texture overlay ───────────────────────── */
+.texture-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23000' opacity='0'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='%23fff' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* ── Warm section backgrounds ──────────────── */
+.bg-warm-section {
+  background: linear-gradient(135deg, var(--charcoal) 0%, #261f10 100%);
+}
+
+/* ── Animations ────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-up      { opacity: 0; animation: fadeUp       0.75s ease forwards; }
+.animate-fade-in      { opacity: 0; animation: fadeIn       0.6s  ease forwards; }
+.animate-slide-in     { opacity: 0; animation: slideIn      0.6s  ease forwards; }
+.animate-slide-right  { opacity: 0; animation: slideInRight 0.4s  ease forwards; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }

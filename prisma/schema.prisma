@@ -1,0 +1,187 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// prisma/schema.prisma
+// Define your database models
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Example models
+
+// ─── ENUMS ───────────────────────────────────────────────────
+
+enum TourType {
+  guided        // fully guided with a BKT guide
+  self_guided   // customer rides alone with route plan
+  rental        // just renting the sidecar, no tour
+}
+
+enum Difficulty {
+  easy
+  moderate
+  challenging
+}
+
+enum BookingStatus {
+  pending   // just submitted, waiting for admin review
+  rejected  // admin rejected the booking
+  paid      // customer paid in full
+}
+
+enum RidingExperience {
+  beginner
+  intermediate
+  experienced
+}
+
+enum AdminRole {
+  super_admin   // can delete, full access
+  staff         // can view and update bookings
+}
+
+enum VehicleType {
+  ural_sidecar
+  dnepr_sidecar
+  solo_bike
+}
+
+// ─── MODELS ──────────────────────────────────────────────────
+
+model Tour {
+  id           String     @id @default(cuid())  // unique ID, auto-generated
+  slug         String     @unique               // URL-friendly name e.g. "khangai-classic"
+  title        String                           // "Khangai Classic"
+  subtitle     String                           // short tagline
+  description  String     @db.Text             // long text, no length limit
+  days         Int                              // duration
+  price        Float                           // price per person in USD
+  maxGroupSize Int        @default(8)
+  type         TourType   @default(guided)
+  region       String                           // "Khangai", "Gobi", "Altai" etc.
+  difficulty   Difficulty @default(moderate)
+  featured     Boolean    @default(false)       // show on homepage
+  published    Boolean    @default(false)       // visible to public
+  highlights   String[]                         // array of highlight strings
+  includes     String[]                         // what's included
+  excludes     String[]                         // what's not included
+  images       TourImage[]                      // relation to images
+  bookings     Booking[]                        // relation to bookings
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt            // auto-updates on every save
+
+  @@index([slug])
+  @@index([featured])
+  @@index([published])
+}
+
+model TourImage {
+  id        String   @id @default(cuid())
+  tourId    String                          // which tour this image belongs to
+  tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  // onDelete: Cascade = if the tour is deleted, all its images are deleted too
+  url       String                          // Cloudinary URL
+  alt       String?                         // ? means optional
+  order     Int      @default(0)           // for sorting images
+  createdAt DateTime @default(now())
+
+  @@index([tourId])
+}
+
+model Rental {
+  id          String      @id @default(cuid())
+  name        String                            // "Ural Gear-Up Sidecar"
+  type        VehicleType
+  description String      @db.Text
+  pricePerDay Float                             // e.g. 85.00
+  available   Boolean     @default(true)        // admin can toggle on/off
+  specs       Json        @default("{}")        // flexible key-value specs
+  images      String[]                          // array of image URLs
+  bookings    Booking[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Booking {
+  id               String           @id @default(cuid())
+  status           BookingStatus    @default(pending)
+
+  // one of these will be set, the other null
+  tourId           String?
+  tour             Tour?            @relation(fields: [tourId], references: [id])
+  rentalId         String?
+  rental           Rental?          @relation(fields: [rentalId], references: [id])
+
+  startDate        DateTime
+  endDate          DateTime
+  guestName        String
+  guestEmail       String
+  guestPhone       String?
+  nationality      String
+  groupSize        Int              @default(1)
+  ridingExperience RidingExperience @default(beginner)
+  specialRequests  String?          @db.Text
+
+  // payment tracking
+  totalPrice       Float
+  depositAmount    Float?
+  depositPaid      Boolean          @default(false)
+  depositPaidAt    DateTime?
+
+  // admin use only
+  adminNotes       String?          @db.Text
+  confirmationSentAt DateTime?
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([status])
+  @@index([guestEmail])
+  @@index([startDate])
+  @@index([tourId])
+  @@index([rentalId])
+}
+
+model Admin {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String
+  password  String    // stored as bcrypt hash, never plain text
+  role      AdminRole @default(staff)
+  active    Boolean   @default(true)  // deactivate without deleting
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([email])
+}
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique   // e.g. "hero_title", "about_text"
+  value     String   @db.Text  // the actual content
+  type      String   @default("text")  // text | image | richtext
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  excerpt     String                  // short preview text
+  body        String    @db.Text      // full blog content
+  coverImage  String?
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
