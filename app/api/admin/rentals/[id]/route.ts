@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { VehicleType } from "@/generated/prisma/enums";
+import { VehicleType } from "@prisma/client";
 
 const VALID_TYPES = new Set(["ural_sidecar", "dnepr_sidecar", "solo_bike"]);
 

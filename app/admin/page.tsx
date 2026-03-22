@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { BookingStatus } from "@/generated/prisma/enums";
+import { BookingStatus } from "@prisma/client";
 
 const STATUS_COLORS: Record<string, string> = {
   pending:  "text-yellow-400 border-yellow-400/30 bg-yellow-400/5",

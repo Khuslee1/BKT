@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { BookingStatus } from "@/generated/prisma/enums";
+import { BookingStatus } from "@prisma/client";
 
 const VALID_STATUSES = new Set(["pending", "rejected", "paid"]);
 

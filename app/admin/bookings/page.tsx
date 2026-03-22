@@ -1,4 +1,4 @@
-import { BookingStatus } from "@/generated/prisma/enums";
+import { BookingStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 

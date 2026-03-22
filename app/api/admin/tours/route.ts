@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { Difficulty, TourType } from "@/generated/prisma/enums";
+import { Difficulty, TourType } from "@prisma/client";
 
 const VALID_TYPES = new Set(["guided", "self_guided", "rental"]);
 const VALID_DIFFICULTIES = new Set(["easy", "moderate", "challenging"]);
