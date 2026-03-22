@@ -49,6 +49,6 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error("[POST /api/admin/login]", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: "Server error", detail: String(error) }, { status: 500 });
   }
 }
