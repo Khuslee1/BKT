@@ -23,6 +23,27 @@ interface FormData {
 
 const STEPS = ["Service", "Dates", "Your details", "Confirm"];
 
+// ── shared styles ──
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "12px 16px",
+  fontSize: "14px",
+  background: "var(--cream)",
+  border: "1px solid rgba(61,46,24,0.15)",
+  color: "var(--dark-brown)",
+  outline: "none",
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontFamily: "Barlow Condensed, sans-serif",
+  fontSize: "11px",
+  letterSpacing: "0.2em",
+  textTransform: "uppercase",
+  color: "var(--gold)",
+  marginBottom: "8px",
+};
+
 function BookingForm() {
   const searchParams = useSearchParams();
   const tourSlug = searchParams.get("tour") ?? "";
@@ -45,7 +66,6 @@ function BookingForm() {
       .catch(() => {});
   }, []);
 
-  // Preselect from URL params once data loads
   const preselectedTour = tours.find((t) => t.slug === tourSlug);
   const preselectedRental = rentals.find((r) => r.id === rentalParam);
 
@@ -70,7 +90,6 @@ function BookingForm() {
     agreedToTerms: false,
   });
 
-  // Apply preselection once tours/rentals load
   useEffect(() => {
     if (preselectedTour) setForm((p) => ({ ...p, tourId: preselectedTour.id }));
   }, [preselectedTour?.id]);
@@ -83,7 +102,6 @@ function BookingForm() {
   const set = (key: keyof FormData, value: string | boolean) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  // ── price calculation ──
   const selectedTour = tours.find((t) => t.id === form.tourId);
   const selectedRental = rentals.find((r) => r.id === form.rentalId);
 
@@ -112,7 +130,6 @@ function BookingForm() {
 
   const totalPrice = calcPrice();
 
-  // ── step validation ──
   const canProceed = () => {
     if (step === 1)
       return form.serviceType === "tour" ? !!form.tourId : !!form.rentalId;
@@ -122,8 +139,7 @@ function BookingForm() {
     return true;
   };
 
-  // ── submit ──
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -134,28 +150,11 @@ function BookingForm() {
 
     const extras = [
       form.nationality ? `Nationality: ${form.nationality}` : null,
-      form.ridingExperience
-        ? `Riding experience: ${form.ridingExperience}`
-        : null,
+      form.ridingExperience ? `Riding experience: ${form.ridingExperience}` : null,
       form.specialRequests || null,
     ]
       .filter(Boolean)
       .join("\n");
-    console.log("Booking payload:", {
-      tourId: form.serviceType === "tour" ? form.tourId : undefined,
-      rentalId: form.serviceType === "rental" ? form.rentalId : undefined,
-      firstName,
-      lastName,
-      email: form.guestEmail,
-      phone: form.guestPhone || undefined,
-      startDate: form.startDate,
-      endDate: form.endDate,
-      groupSize: Number(form.groupSize),
-      ridingExperience: form.ridingExperience,
-      nationality: form.nationality,
-      specialRequests: extras || undefined,
-      totalPrice,
-    });
 
     try {
       const res = await fetch("/api/bookings", {
@@ -201,30 +200,24 @@ function BookingForm() {
     return (
       <div
         className="min-h-screen flex items-center justify-center px-6"
-        style={{ background: "var(--black)" }}
+        style={{ background: "var(--warm-white)" }}
       >
         <div className="max-w-md text-center">
           <div
             className="w-16 h-16 border mx-auto flex items-center justify-center mb-8"
             style={{ borderColor: "var(--gold)" }}
           >
-            <span className="text-2xl" style={{ color: "var(--gold)" }}>
-              ✓
-            </span>
+            <span className="text-2xl" style={{ color: "var(--gold)" }}>✓</span>
           </div>
-          <h2
-            className="font-display text-4xl mb-4"
-            style={{ color: "var(--parchment)" }}
-          >
+          <h2 className="font-display text-4xl mb-4" style={{ color: "var(--dark-brown)" }}>
             Request Sent
           </h2>
-          <p className="leading-relaxed mb-2" style={{ color: "var(--stone)" }}>
+          <p className="leading-relaxed mb-2" style={{ color: "var(--ash)" }}>
             Thank you,{" "}
-            <span style={{ color: "var(--parchment)" }}>{form.guestName}</span>.
-            We've received your booking request and will confirm within 24
-            hours.
+            <span style={{ color: "var(--dark-brown)" }}>{form.guestName}</span>.
+            We've received your booking request and will confirm within 24 hours.
           </p>
-          <p className="text-sm mb-8" style={{ color: "var(--stone)" }}>
+          <p className="text-sm mb-8" style={{ color: "var(--ash)" }}>
             Check your inbox at{" "}
             <span style={{ color: "var(--gold)" }}>{form.guestEmail}</span>
           </p>
@@ -237,44 +230,22 @@ function BookingForm() {
     );
   }
 
-  // ── shared styles ──
-  const inputStyle = {
-    width: "100%",
-    padding: "12px 16px",
-    fontSize: "14px",
-    background: "var(--charcoal-light)",
-    border: "1px solid var(--ash)",
-    color: "var(--parchment)",
-    outline: "none",
-  };
-
-  const labelStyle = {
-    display: "block",
-    fontFamily: "Barlow Condensed, sans-serif",
-    fontSize: "11px",
-    letterSpacing: "0.2em",
-    textTransform: "uppercase" as const,
-    color: "var(--gold)",
-    marginBottom: "8px",
-  };
+  const borderInactive = "rgba(61,46,24,0.15)";
 
   return (
-    <main className="min-h-screen" style={{ background: "var(--black)" }}>
+    <main className="min-h-screen" style={{ background: "var(--warm-white)" }}>
       {/* ── HEADER ── */}
       <section className="pt-32 pb-12">
         <div className="max-w-2xl mx-auto px-6">
           <Link
             href="/tours"
-            className="font-condensed text-xs tracking-widest uppercase block mb-8 transition-colors"
-            style={{ color: "var(--stone)" }}
+            className="font-condensed text-xs tracking-widest uppercase block mb-8 transition-colors hover:text-gold"
+            style={{ color: "var(--ash)" }}
           >
             ← Back to Tours
           </Link>
           <p className="section-eyebrow mb-3">Reserve your adventure</p>
-          <h1
-            className="font-display text-4xl mb-10"
-            style={{ color: "var(--parchment)" }}
-          >
+          <h1 className="font-display text-4xl mb-10" style={{ color: "var(--dark-brown)" }}>
             Book Your <em style={{ color: "var(--gold)" }}>Expedition</em>
           </h1>
 
@@ -286,8 +257,7 @@ function BookingForm() {
                   <div
                     className="w-8 h-8 border flex items-center justify-center font-condensed text-xs transition-all"
                     style={{
-                      borderColor:
-                        i + 1 <= step ? "var(--gold)" : "var(--charcoal-light)",
+                      borderColor: i + 1 <= step ? "var(--gold)" : borderInactive,
                       background: i + 1 < step ? "var(--gold)" : "transparent",
                       color:
                         i + 1 < step
@@ -301,9 +271,7 @@ function BookingForm() {
                   </div>
                   <span
                     className="font-condensed text-[10px] tracking-wider uppercase mt-1.5"
-                    style={{
-                      color: i + 1 === step ? "var(--gold)" : "var(--stone)",
-                    }}
+                    style={{ color: i + 1 === step ? "var(--gold)" : "var(--stone)" }}
                   >
                     {s}
                   </span>
@@ -311,10 +279,7 @@ function BookingForm() {
                 {i < STEPS.length - 1 && (
                   <div
                     className="flex-1 h-px mx-3 mb-5 transition-colors"
-                    style={{
-                      background:
-                        i + 1 < step ? "var(--gold)" : "var(--charcoal-light)",
-                    }}
+                    style={{ background: i + 1 < step ? "var(--gold)" : borderInactive }}
                   />
                 )}
               </div>
@@ -326,6 +291,7 @@ function BookingForm() {
       {/* ── FORM ── */}
       <form onSubmit={handleSubmit}>
         <div className="max-w-2xl mx-auto px-6 pb-24">
+
           {/* STEP 1 */}
           {step === 1 && (
             <div className="flex flex-col gap-6">
@@ -339,23 +305,20 @@ function BookingForm() {
                       onClick={() => set("serviceType", type)}
                       className="p-5 text-left transition-all"
                       style={{
-                        border: `1px solid ${form.serviceType === type ? "var(--gold)" : "var(--charcoal-light)"}`,
+                        border: `1px solid ${form.serviceType === type ? "var(--gold)" : borderInactive}`,
                         background:
                           form.serviceType === type
-                            ? "rgba(201,151,42,0.05)"
-                            : "var(--charcoal)",
+                            ? "rgba(201,144,42,0.06)"
+                            : "var(--cream)",
                       }}
                     >
                       <p
                         className="font-condensed tracking-wider uppercase mb-1"
-                        style={{ color: "var(--parchment)" }}
+                        style={{ color: "var(--dark-brown)" }}
                       >
                         {type === "tour" ? "Guided Tour" : "Sidecar Rental"}
                       </p>
-                      <p
-                        className="text-xs leading-relaxed"
-                        style={{ color: "var(--stone)" }}
-                      >
+                      <p className="text-xs leading-relaxed" style={{ color: "var(--ash)" }}>
                         {type === "tour"
                           ? "Fully guided with accommodation & meals"
                           : "Self-guided with route planning support"}
@@ -376,38 +339,26 @@ function BookingForm() {
                         onClick={() => set("tourId", t.id)}
                         className="w-full p-4 text-left flex items-center justify-between transition-all"
                         style={{
-                          border: `1px solid ${form.tourId === t.id ? "var(--gold)" : "var(--charcoal-light)"}`,
+                          border: `1px solid ${form.tourId === t.id ? "var(--gold)" : borderInactive}`,
                           background:
                             form.tourId === t.id
-                              ? "rgba(201,151,42,0.05)"
-                              : "var(--charcoal)",
+                              ? "rgba(201,144,42,0.06)"
+                              : "var(--cream)",
                         }}
                       >
                         <div>
-                          <p
-                            className="font-condensed tracking-wide"
-                            style={{ color: "var(--parchment)" }}
-                          >
+                          <p className="font-condensed tracking-wide" style={{ color: "var(--dark-brown)" }}>
                             {t.title}
                           </p>
-                          <p
-                            className="text-xs mt-0.5"
-                            style={{ color: "var(--stone)" }}
-                          >
+                          <p className="text-xs mt-0.5" style={{ color: "var(--ash)" }}>
                             {t.days} days · {t.region}
                           </p>
                         </div>
                         <div className="text-right ml-4">
-                          <p
-                            className="font-display text-lg"
-                            style={{ color: "var(--gold)" }}
-                          >
+                          <p className="font-display text-lg" style={{ color: "var(--gold)" }}>
                             ${t.price.toLocaleString()}
                           </p>
-                          <p
-                            className="text-[10px]"
-                            style={{ color: "var(--stone)" }}
-                          >
+                          <p className="text-[10px]" style={{ color: "var(--stone)" }}>
                             per person
                           </p>
                         </div>
@@ -428,38 +379,26 @@ function BookingForm() {
                         onClick={() => set("rentalId", r.id)}
                         className="w-full p-4 text-left flex items-center justify-between transition-all"
                         style={{
-                          border: `1px solid ${form.rentalId === r.id ? "var(--gold)" : "var(--charcoal-light)"}`,
+                          border: `1px solid ${form.rentalId === r.id ? "var(--gold)" : borderInactive}`,
                           background:
                             form.rentalId === r.id
-                              ? "rgba(201,151,42,0.05)"
-                              : "var(--charcoal)",
+                              ? "rgba(201,144,42,0.06)"
+                              : "var(--cream)",
                         }}
                       >
                         <div>
-                          <p
-                            className="font-condensed tracking-wide"
-                            style={{ color: "var(--parchment)" }}
-                          >
+                          <p className="font-condensed tracking-wide" style={{ color: "var(--dark-brown)" }}>
                             {r.name}
                           </p>
-                          <p
-                            className="text-xs mt-0.5"
-                            style={{ color: "var(--stone)" }}
-                          >
+                          <p className="text-xs mt-0.5" style={{ color: "var(--ash)" }}>
                             {r.description.slice(0, 55)}…
                           </p>
                         </div>
                         <div className="text-right ml-4">
-                          <p
-                            className="font-display text-lg"
-                            style={{ color: "var(--gold)" }}
-                          >
+                          <p className="font-display text-lg" style={{ color: "var(--gold)" }}>
                             ${r.pricePerDay}
                           </p>
-                          <p
-                            className="text-[10px]"
-                            style={{ color: "var(--stone)" }}
-                          >
+                          <p className="text-[10px]" style={{ color: "var(--stone)" }}>
                             per day
                           </p>
                         </div>
@@ -530,29 +469,27 @@ function BookingForm() {
               <div>
                 <label style={labelStyle}>Riding experience</label>
                 <div className="grid grid-cols-3 gap-3">
-                  {(["beginner", "intermediate", "experienced"] as const).map(
-                    (lvl) => (
-                      <button
-                        key={lvl}
-                        type="button"
-                        onClick={() => set("ridingExperience", lvl)}
-                        className="p-3 text-center font-condensed text-xs tracking-wider uppercase transition-all"
-                        style={{
-                          border: `1px solid ${form.ridingExperience === lvl ? "var(--gold)" : "var(--charcoal-light)"}`,
-                          background:
-                            form.ridingExperience === lvl
-                              ? "rgba(201,151,42,0.05)"
-                              : "var(--charcoal)",
-                          color:
-                            form.ridingExperience === lvl
-                              ? "var(--gold)"
-                              : "var(--stone)",
-                        }}
-                      >
-                        {lvl}
-                      </button>
-                    ),
-                  )}
+                  {(["beginner", "intermediate", "experienced"] as const).map((lvl) => (
+                    <button
+                      key={lvl}
+                      type="button"
+                      onClick={() => set("ridingExperience", lvl)}
+                      className="p-3 text-center font-condensed text-xs tracking-wider uppercase transition-all"
+                      style={{
+                        border: `1px solid ${form.ridingExperience === lvl ? "var(--gold)" : borderInactive}`,
+                        background:
+                          form.ridingExperience === lvl
+                            ? "rgba(201,144,42,0.06)"
+                            : "var(--cream)",
+                        color:
+                          form.ridingExperience === lvl
+                            ? "var(--gold)"
+                            : "var(--ash)",
+                      }}
+                    >
+                      {lvl}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -561,30 +498,25 @@ function BookingForm() {
                   className="p-4 border-l-2 flex items-center justify-between"
                   style={{
                     borderColor: "var(--gold)",
-                    background: "var(--charcoal)",
+                    background: "var(--cream)",
+                    border: "1px solid rgba(61,46,24,0.12)",
+                    borderLeft: "3px solid var(--gold)",
                   }}
                 >
                   <span
                     className="font-condensed text-xs tracking-wider uppercase"
-                    style={{ color: "var(--stone)" }}
+                    style={{ color: "var(--ash)" }}
                   >
                     Estimated total
                   </span>
-                  <span
-                    className="font-display text-2xl"
-                    style={{ color: "var(--gold)" }}
-                  >
+                  <span className="font-display text-2xl" style={{ color: "var(--gold)" }}>
                     ${totalPrice.toLocaleString()}
                   </span>
                 </div>
               )}
 
               <div className="flex justify-between pt-2">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="btn-outline-gold text-xs"
-                >
+                <button type="button" onClick={() => setStep(1)} className="btn-outline-gold text-xs">
                   ← Back
                 </button>
                 <button
@@ -663,11 +595,7 @@ function BookingForm() {
               </div>
 
               <div className="flex justify-between pt-2">
-                <button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  className="btn-outline-gold text-xs"
-                >
+                <button type="button" onClick={() => setStep(2)} className="btn-outline-gold text-xs">
                   ← Back
                 </button>
                 <button
@@ -686,22 +614,19 @@ function BookingForm() {
           {step === 4 && (
             <div>
               <div
-                className="mb-6"
-                style={{ border: "1px solid var(--charcoal-light)" }}
+                className="mb-6 overflow-hidden"
+                style={{ border: "1px solid rgba(61,46,24,0.12)" }}
               >
                 <div
                   className="px-6 py-4 border-b"
                   style={{
-                    borderColor: "var(--charcoal-light)",
-                    background: "var(--charcoal)",
+                    borderColor: "rgba(61,46,24,0.12)",
+                    background: "var(--cream)",
                   }}
                 >
                   <p className="section-eyebrow">Booking summary</p>
                 </div>
-                <div
-                  className="divide-y"
-                  style={{ "--tw-divide-opacity": 1 } as React.CSSProperties}
-                >
+                <div>
                   {[
                     {
                       label: "Service",
@@ -710,23 +635,20 @@ function BookingForm() {
                           ? (selectedTour?.title ?? "—")
                           : (selectedRental?.name ?? "—"),
                     },
-                    {
-                      label: "Dates",
-                      value: `${form.startDate} → ${form.endDate}`,
-                    },
-                    {
-                      label: "Group size",
-                      value: `${form.groupSize} person(s)`,
-                    },
+                    { label: "Dates", value: `${form.startDate} → ${form.endDate}` },
+                    { label: "Group size", value: `${form.groupSize} person(s)` },
                     { label: "Experience", value: form.ridingExperience },
                     { label: "Name", value: form.guestName },
                     { label: "Email", value: form.guestEmail },
                     { label: "Nationality", value: form.nationality },
-                  ].map((row) => (
+                  ].map((row, idx) => (
                     <div
                       key={row.label}
                       className="flex justify-between items-start px-6 py-3 text-sm"
-                      style={{ borderColor: "var(--charcoal-light)" }}
+                      style={{
+                        borderTop: idx > 0 ? "1px solid rgba(61,46,24,0.08)" : undefined,
+                        background: "var(--warm-white)",
+                      }}
                     >
                       <span
                         className="font-condensed text-xs tracking-wider uppercase"
@@ -734,10 +656,7 @@ function BookingForm() {
                       >
                         {row.label}
                       </span>
-                      <span
-                        className="text-right max-w-[60%]"
-                        style={{ color: "var(--parchment)" }}
-                      >
+                      <span className="text-right max-w-[60%]" style={{ color: "var(--dark-brown)" }}>
                         {row.value}
                       </span>
                     </div>
@@ -745,20 +664,17 @@ function BookingForm() {
                   <div
                     className="flex justify-between items-center px-6 py-4"
                     style={{
-                      background: "var(--charcoal)",
-                      borderColor: "var(--charcoal-light)",
+                      background: "var(--cream)",
+                      borderTop: "1px solid rgba(61,46,24,0.12)",
                     }}
                   >
                     <span
                       className="font-condensed text-xs tracking-wider uppercase"
-                      style={{ color: "var(--stone)" }}
+                      style={{ color: "var(--ash)" }}
                     >
                       Estimated total
                     </span>
-                    <span
-                      className="font-display text-2xl"
-                      style={{ color: "var(--gold)" }}
-                    >
+                    <span className="font-display text-2xl" style={{ color: "var(--gold)" }}>
                       ${totalPrice.toLocaleString()}
                     </span>
                   </div>
@@ -769,9 +685,9 @@ function BookingForm() {
                 <div
                   className="p-4 mb-6 text-sm italic"
                   style={{
-                    background: "var(--charcoal-mid)",
-                    border: "1px solid var(--charcoal-light)",
-                    color: "var(--stone)",
+                    background: "var(--cream)",
+                    border: "1px solid rgba(61,46,24,0.12)",
+                    color: "var(--ash)",
                   }}
                 >
                   "{form.specialRequests}"
@@ -784,27 +700,17 @@ function BookingForm() {
                   onClick={() => set("agreedToTerms", !form.agreedToTerms)}
                   className="mt-0.5 w-5 h-5 border flex-shrink-0 flex items-center justify-center transition-colors"
                   style={{
-                    borderColor: form.agreedToTerms
-                      ? "var(--gold)"
-                      : "var(--ash)",
-                    background: form.agreedToTerms
-                      ? "var(--gold)"
-                      : "transparent",
+                    borderColor: form.agreedToTerms ? "var(--gold)" : "rgba(61,46,24,0.3)",
+                    background: form.agreedToTerms ? "var(--gold)" : "transparent",
                   }}
                 >
                   {form.agreedToTerms && (
-                    <span style={{ color: "var(--black)", fontSize: "11px" }}>
-                      ✓
-                    </span>
+                    <span style={{ color: "var(--black)", fontSize: "11px" }}>✓</span>
                   )}
                 </button>
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "var(--stone)" }}
-                >
-                  I understand this is a booking <em>request</em>. BKT will
-                  confirm availability and send a deposit link within 24 hours.
-                  I agree to the{" "}
+                <p className="text-sm leading-relaxed" style={{ color: "var(--ash)" }}>
+                  I understand this is a booking <em>request</em>. BKT will confirm
+                  availability and send a deposit link within 24 hours. I agree to the{" "}
                   <Link href="#" style={{ color: "var(--gold)" }}>
                     terms and conditions
                   </Link>
@@ -816,9 +722,9 @@ function BookingForm() {
                 <div
                   className="mb-6 px-4 py-3 text-sm border"
                   style={{
-                    borderColor: "var(--ash)",
-                    background: "rgba(255,80,80,0.06)",
-                    color: "#f87171",
+                    borderColor: "rgba(239,68,68,0.3)",
+                    background: "rgba(239,68,68,0.05)",
+                    color: "#dc2626",
                   }}
                 >
                   ⚠ {error}
@@ -826,11 +732,7 @@ function BookingForm() {
               )}
 
               <div className="flex justify-between">
-                <button
-                  type="button"
-                  onClick={() => setStep(3)}
-                  className="btn-outline-gold text-xs"
-                >
+                <button type="button" onClick={() => setStep(3)} className="btn-outline-gold text-xs">
                   ← Edit Details
                 </button>
                 <button

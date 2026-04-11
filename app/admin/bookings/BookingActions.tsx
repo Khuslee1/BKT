@@ -15,10 +15,10 @@ export default function BookingActions({
   adminNotes: string;
 }) {
   const router = useRouter();
-  const [status, setStatus] = useState(currentStatus);
-  const [notes, setNotes] = useState(adminNotes);
+  const [status, setStatus]   = useState(currentStatus);
+  const [notes, setNotes]     = useState(adminNotes);
   const [loading, setLoading] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved]     = useState(false);
 
   const handleSave = async () => {
     setLoading(true);
@@ -36,22 +36,35 @@ export default function BookingActions({
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const inputStyle = {
+    background: "var(--cream)",
+    border: "1px solid rgba(61,46,24,0.15)",
+    color: "var(--dark-brown)",
+  };
+
   return (
-    <div className="bg-charcoal border border-stone/10">
-      <div className="px-6 py-4 border-b border-stone/10">
-        <h2 className="font-condensed text-sm tracking-widest uppercase text-parchment">
+    <div style={{ background: "var(--warm-white)", border: "1px solid rgba(61,46,24,0.1)" }}>
+      <div
+        className="px-6 py-4"
+        style={{ borderBottom: "1px solid rgba(61,46,24,0.08)" }}
+      >
+        <h2 className="font-condensed text-sm tracking-widest uppercase text-dark-brown">
           Actions
         </h2>
       </div>
       <div className="p-6 flex flex-col gap-5">
         <div>
-          <label className="block font-condensed text-[11px] tracking-widest uppercase text-gold mb-2">
+          <label
+            className="block font-condensed text-[11px] tracking-widest uppercase mb-2"
+            style={{ color: "var(--gold)" }}
+          >
             Status
           </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full px-4 py-3 bg-black border border-stone/20 text-parchment text-sm outline-none focus:border-gold transition-colors"
+            className="w-full px-4 py-3 text-sm outline-none focus:border-gold transition-colors"
+            style={inputStyle}
           >
             {STATUSES.map((s) => (
               <option key={s} value={s}>
@@ -62,7 +75,10 @@ export default function BookingActions({
         </div>
 
         <div>
-          <label className="block font-condensed text-[11px] tracking-widest uppercase text-gold mb-2">
+          <label
+            className="block font-condensed text-[11px] tracking-widest uppercase mb-2"
+            style={{ color: "var(--gold)" }}
+          >
             Admin Notes
           </label>
           <textarea
@@ -70,7 +86,8 @@ export default function BookingActions({
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Internal notes, deposit details, follow-up reminders..."
-            className="w-full px-4 py-3 bg-black border border-stone/20 text-parchment text-sm outline-none focus:border-gold transition-colors resize-vertical"
+            className="w-full px-4 py-3 text-sm outline-none focus:border-gold transition-colors resize-vertical"
+            style={inputStyle}
           />
         </div>
 

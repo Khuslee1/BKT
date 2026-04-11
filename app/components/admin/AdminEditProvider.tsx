@@ -66,10 +66,10 @@ export default function AdminEditProvider({ children }: { children: ReactNode })
           onClick={toggleEditMode}
           className="w-11 h-11 flex items-center justify-center text-lg transition-all duration-200"
           style={{
-            background: isEditMode ? "var(--gold)" : "var(--charcoal)",
-            border: `1px solid ${isEditMode ? "var(--gold)" : "rgba(255,255,255,0.12)"}`,
-            color: isEditMode ? "var(--black)" : "var(--stone)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+            background: isEditMode ? "var(--gold)" : "var(--dark-brown)",
+            border: `1px solid ${isEditMode ? "var(--gold)" : "rgba(201,144,42,0.3)"}`,
+            color: isEditMode ? "var(--black)" : "var(--parchment)",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
           }}
           title={isEditMode ? "Exit edit mode" : "Edit page content"}
         >
@@ -215,11 +215,15 @@ function SaveBtn({
 // ── Save site content helper ──────────────────────────────────────
 
 async function saveSiteContent(key: string, value: unknown) {
-  await fetch(`/api/admin/site-content/${key}`, {
+  const res = await fetch(`/api/admin/site-content/${key}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ value: JSON.stringify(value) }),
   });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error ?? `Server error (${res.status})`);
+  }
 }
 
 // ── Drawer shell ──────────────────────────────────────────────────
@@ -338,6 +342,7 @@ function HeroEditor({
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const update = (i: number, field: keyof SlideData, val: string) =>
     setSlides((prev) =>
@@ -346,14 +351,17 @@ function HeroEditor({
 
   const save = async () => {
     setLoading(true);
-    await saveSiteContent("homepage_hero", { slides });
-    setLoading(false);
-    setSaved(true);
-    router.refresh();
-    setTimeout(() => {
-      setSaved(false);
-      onClose();
-    }, 1200);
+    setError(null);
+    try {
+      await saveSiteContent("homepage_hero", { slides });
+      setSaved(true);
+      router.refresh();
+      setTimeout(() => { setSaved(false); onClose(); }, 1200);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unexpected error.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const s = slides[active];
@@ -408,6 +416,7 @@ function HeroEditor({
         </Field>
       </div>
 
+      {error && <p className="text-red-400 text-xs border border-red-400/20 bg-red-400/5 px-3 py-2">{error}</p>}
       <SaveBtn onClick={save} loading={loading} saved={saved} />
     </div>
   );
@@ -442,20 +451,24 @@ function AboutEditor({
   );
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const set = (field: keyof AboutData, val: string) =>
     setForm((p) => ({ ...p, [field]: val }));
 
   const save = async () => {
     setLoading(true);
-    await saveSiteContent("homepage_about", form);
-    setLoading(false);
-    setSaved(true);
-    router.refresh();
-    setTimeout(() => {
-      setSaved(false);
-      onClose();
-    }, 1200);
+    setError(null);
+    try {
+      await saveSiteContent("homepage_about", form);
+      setSaved(true);
+      router.refresh();
+      setTimeout(() => { setSaved(false); onClose(); }, 1200);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unexpected error.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -477,6 +490,7 @@ function AboutEditor({
       <Field label="Paragraph 3">
         <Textarea value={form.para3} onChange={(v) => set("para3", v)} rows={3} />
       </Field>
+      {error && <p className="text-red-400 text-xs border border-red-400/20 bg-red-400/5 px-3 py-2">{error}</p>}
       <SaveBtn onClick={save} loading={loading} saved={saved} />
     </div>
   );
@@ -499,6 +513,7 @@ function StatsEditor({
   );
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const update = (i: number, field: keyof StatItem, val: string) =>
     setItems((prev) =>
@@ -507,14 +522,17 @@ function StatsEditor({
 
   const save = async () => {
     setLoading(true);
-    await saveSiteContent("homepage_stats", { items });
-    setLoading(false);
-    setSaved(true);
-    router.refresh();
-    setTimeout(() => {
-      setSaved(false);
-      onClose();
-    }, 1200);
+    setError(null);
+    try {
+      await saveSiteContent("homepage_stats", { items });
+      setSaved(true);
+      router.refresh();
+      setTimeout(() => { setSaved(false); onClose(); }, 1200);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unexpected error.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -529,6 +547,7 @@ function StatsEditor({
           </Field>
         </div>
       ))}
+      {error && <p className="text-red-400 text-xs border border-red-400/20 bg-red-400/5 px-3 py-2">{error}</p>}
       <SaveBtn onClick={save} loading={loading} saved={saved} />
     </div>
   );
@@ -558,33 +577,41 @@ function TourEditor({
   });
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const set = (field: string, val: string | boolean) =>
     setForm((p) => ({ ...p, [field]: val }));
 
   const save = async () => {
     setLoading(true);
-    await fetch(`/api/admin/tours/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: form.title,
-        subtitle: form.subtitle,
-        description: form.description,
-        price: Number(form.price),
-        days: Number(form.days),
-        region: form.region,
-        published: form.published,
-        featured: form.featured,
-      }),
-    });
-    setLoading(false);
-    setSaved(true);
-    router.refresh();
-    setTimeout(() => {
-      setSaved(false);
-      onClose();
-    }, 1200);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/tours/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: form.title,
+          subtitle: form.subtitle,
+          description: form.description,
+          price: Number(form.price),
+          days: Number(form.days),
+          region: form.region,
+          published: form.published,
+          featured: form.featured,
+        }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? `Server error (${res.status})`);
+      }
+      setSaved(true);
+      router.refresh();
+      setTimeout(() => { setSaved(false); onClose(); }, 1200);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unexpected error.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -616,6 +643,7 @@ function TourEditor({
         <Toggle label="Published (visible to public)" value={form.published} onChange={(v) => set("published", v)} />
         <Toggle label="Featured on homepage" value={form.featured} onChange={(v) => set("featured", v)} />
       </div>
+      {error && <p className="text-red-400 text-xs border border-red-400/20 bg-red-400/5 px-3 py-2">{error}</p>}
       <SaveBtn onClick={save} loading={loading} saved={saved} />
     </div>
   );
@@ -641,29 +669,37 @@ function RentalEditor({
   });
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const set = (field: string, val: string | boolean) =>
     setForm((p) => ({ ...p, [field]: val }));
 
   const save = async () => {
     setLoading(true);
-    await fetch(`/api/admin/rentals/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: form.name,
-        description: form.description,
-        pricePerDay: Number(form.pricePerDay),
-        available: form.available,
-      }),
-    });
-    setLoading(false);
-    setSaved(true);
-    router.refresh();
-    setTimeout(() => {
-      setSaved(false);
-      onClose();
-    }, 1200);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/rentals/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          description: form.description,
+          pricePerDay: Number(form.pricePerDay),
+          available: form.available,
+        }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? `Server error (${res.status})`);
+      }
+      setSaved(true);
+      router.refresh();
+      setTimeout(() => { setSaved(false); onClose(); }, 1200);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unexpected error.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -687,6 +723,7 @@ function RentalEditor({
           onChange={(v) => set("available", v)}
         />
       </div>
+      {error && <p className="text-red-400 text-xs border border-red-400/20 bg-red-400/5 px-3 py-2">{error}</p>}
       <SaveBtn onClick={save} loading={loading} saved={saved} />
     </div>
   );

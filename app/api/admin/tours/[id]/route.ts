@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { Difficulty, TourType } from "@prisma/client";
@@ -59,6 +60,7 @@ export async function PATCH(
       },
     });
 
+    revalidatePath("/");
     return NextResponse.json(tour);
   } catch (error) {
     console.error("[PATCH /api/admin/tours/[id]]", error);

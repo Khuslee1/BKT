@@ -24,4 +24,5 @@ export interface Rental {
   description: string;
   pricePerDay: number;
   imageUrl?: string | null;
+  images?: string[];
 }

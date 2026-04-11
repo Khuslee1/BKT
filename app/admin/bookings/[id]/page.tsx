@@ -13,7 +13,7 @@ export default async function AdminBookingDetailPage({
   const booking = await prisma.booking.findUnique({
     where: { id },
     include: {
-      tour: { select: { title: true, slug: true } },
+      tour:   { select: { title: true, slug: true } },
       rental: { select: { name: true } },
     },
   });
@@ -21,72 +21,73 @@ export default async function AdminBookingDetailPage({
   if (!booking) notFound();
 
   const rows = [
-    { label: "Guest Name", value: booking.guestName },
-    { label: "Email", value: booking.guestEmail },
-    { label: "Phone", value: booking.guestPhone ?? "—" },
-    { label: "Nationality", value: booking.nationality },
-    {
-      label: "Service",
-      value: booking.tour?.title ?? booking.rental?.name ?? "—",
-    },
-    {
-      label: "Start Date",
-      value: new Date(booking.startDate).toLocaleDateString(),
-    },
-    {
-      label: "End Date",
-      value: new Date(booking.endDate).toLocaleDateString(),
-    },
-    { label: "Group Size", value: String(booking.groupSize) },
+    { label: "Guest Name",        value: booking.guestName },
+    { label: "Email",             value: booking.guestEmail },
+    { label: "Phone",             value: booking.guestPhone ?? "—" },
+    { label: "Nationality",       value: booking.nationality },
+    { label: "Service",           value: booking.tour?.title ?? booking.rental?.name ?? "—" },
+    { label: "Start Date",        value: new Date(booking.startDate).toLocaleDateString() },
+    { label: "End Date",          value: new Date(booking.endDate).toLocaleDateString() },
+    { label: "Group Size",        value: String(booking.groupSize) },
     { label: "Riding Experience", value: booking.ridingExperience },
-    { label: "Total Price", value: `$${booking.totalPrice.toLocaleString()}` },
-    { label: "Deposit Paid", value: booking.depositPaid ? "Yes" : "No" },
-    { label: "Submitted", value: new Date(booking.createdAt).toLocaleString() },
+    { label: "Total Price",       value: `$${booking.totalPrice.toLocaleString()}` },
+    { label: "Deposit Paid",      value: booking.depositPaid ? "Yes" : "No" },
+    { label: "Submitted",         value: new Date(booking.createdAt).toLocaleString() },
   ];
+
+  const cardStyle = {
+    background: "var(--warm-white)",
+    border: "1px solid rgba(61,46,24,0.1)",
+  };
 
   return (
     <div className="max-w-3xl">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <Link
-            href="/admin/bookings"
-            className="font-condensed text-xs tracking-widest uppercase text-stone hover:text-gold transition-colors block mb-3"
+            href="/admin"
+            className="font-condensed text-xs tracking-widest uppercase text-ash hover:text-gold transition-colors block mb-3"
           >
-            ← Back to Bookings
+            ← Back to Dashboard
           </Link>
-          <h1 className="font-display text-3xl text-parchment">
+          <h1 className="font-display text-3xl text-dark-brown">
             Booking <em className="text-gold">Detail</em>
           </h1>
           <p className="text-stone text-xs mt-1 font-mono">{booking.id}</p>
         </div>
       </div>
 
-      <div className="bg-charcoal border border-stone/10 mb-6">
-        <div className="px-6 py-4 border-b border-stone/10">
-          <h2 className="font-condensed text-sm tracking-widest uppercase text-parchment">
+      <div className="mb-6" style={cardStyle}>
+        <div
+          className="px-6 py-4"
+          style={{ borderBottom: "1px solid rgba(61,46,24,0.08)" }}
+        >
+          <h2 className="font-condensed text-sm tracking-widest uppercase text-dark-brown">
             Booking Info
           </h2>
         </div>
-        <div className="divide-y divide-stone/5">
+        <div style={{ borderTop: "none" }}>
           {rows.map((row) => (
-            <div key={row.label} className="flex justify-between px-6 py-3">
+            <div
+              key={row.label}
+              className="flex justify-between px-6 py-3"
+              style={{ borderBottom: "1px solid rgba(61,46,24,0.05)" }}
+            >
               <span className="font-condensed text-xs tracking-widest uppercase text-stone">
                 {row.label}
               </span>
-              <span className="text-sm text-parchment text-right">
-                {row.value}
-              </span>
+              <span className="text-sm text-dark-brown text-right">{row.value}</span>
             </div>
           ))}
         </div>
       </div>
 
       {booking.specialRequests && (
-        <div className="bg-charcoal border border-stone/10 mb-6 px-6 py-4">
+        <div className="mb-6 px-6 py-4" style={cardStyle}>
           <p className="font-condensed text-xs tracking-widest uppercase text-stone mb-2">
             Special Requests
           </p>
-          <p className="text-sm text-parchment leading-relaxed whitespace-pre-line">
+          <p className="text-sm text-ash leading-relaxed whitespace-pre-line">
             {booking.specialRequests}
           </p>
         </div>

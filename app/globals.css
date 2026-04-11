@@ -47,8 +47,8 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--black);
-  color: var(--parchment);
+  background: var(--warm-white);
+  color: var(--dark-brown);
   font-family: "Barlow", sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
@@ -120,14 +120,14 @@ body {
 
 /* ── Cards ─────────────────────────────────── */
 .card-dark {
-  background: var(--charcoal);
-  border: 1px solid var(--charcoal-light);
+  background: var(--cream);
+  border: 1px solid var(--parchment-dark);
   transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 .card-dark:hover {
-  border-color: rgba(201,144,42,0.45);
+  border-color: rgba(201,144,42,0.55);
   transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  box-shadow: 0 16px 48px rgba(201,144,42,0.12);
 }
 
 /* ── Light cream section ───────────────────── */
@@ -146,7 +146,7 @@ body {
 
 /* ── Warm section backgrounds ──────────────── */
 .bg-warm-section {
-  background: linear-gradient(135deg, var(--charcoal) 0%, #261f10 100%);
+  background: linear-gradient(135deg, var(--parchment) 0%, var(--cream) 100%);
 }
 
 /* ── Animations ────────────────────────────── */

@@ -17,12 +17,12 @@ export default async function AdminRentalEditPage({
       <div className="mb-8">
         <Link
           href="/admin/rentals"
-          className="font-condensed text-xs tracking-widest uppercase text-stone hover:text-gold transition-colors block mb-3"
+          className="font-condensed text-xs tracking-widest uppercase text-ash hover:text-gold transition-colors block mb-3"
         >
           ← Back to Rentals
         </Link>
         <p className="section-eyebrow mb-2">Edit</p>
-        <h1 className="font-display text-3xl text-parchment">{rental.name}</h1>
+        <h1 className="font-display text-3xl text-dark-brown">{rental.name}</h1>
       </div>
 
       <RentalForm
@@ -34,6 +34,7 @@ export default async function AdminRentalEditPage({
           pricePerDay: rental.pricePerDay,
           available:   rental.available,
           specs:       (rental.specs as Record<string, string>) ?? {},
+          images:      rental.images,
         }}
       />
     </div>

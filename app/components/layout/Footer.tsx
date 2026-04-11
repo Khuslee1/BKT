@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-black border-t border-charcoal-light">
+    <footer className="bg-cream border-t border-parchment-dark">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
@@ -13,10 +13,10 @@ export default function Footer() {
                 </span>
               </div>
               <div>
-                <div className="font-display text-parchment text-sm">
+                <div className="font-display text-dark-brown text-sm">
                   Bulgan Khangai Travel
                 </div>
-                <div className="font-condensed text-stone text-[10px] tracking-[0.2em] uppercase mt-0.5">
+                <div className="font-condensed text-ash text-[10px] tracking-[0.2em] uppercase mt-0.5">
                   Mongolia
                 </div>
               </div>
@@ -27,7 +27,7 @@ export default function Footer() {
             </p>
             <div className="mt-6">
               <p className="section-eyebrow mb-1">Sidecar Saga</p>
-              <p className="text-parchment-dark text-sm italic font-display">
+              <p className="text-dark-brown text-sm italic font-display">
                 Into the Mongolian Wilderness
               </p>
             </div>

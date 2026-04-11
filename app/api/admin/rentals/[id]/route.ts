@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { VehicleType } from "@prisma/client";
@@ -13,7 +14,7 @@ export async function PATCH(
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const { name, type, description, pricePerDay, available, specs } =
+  const { name, type, description, pricePerDay, available, specs, images } =
     await request.json();
 
   if (type && !VALID_TYPES.has(type)) {
@@ -30,9 +31,11 @@ export async function PATCH(
         ...(pricePerDay !== undefined && { pricePerDay: Number(pricePerDay) }),
         ...(available   !== undefined && { available }),
         ...(specs       !== undefined && { specs }),
+        ...(images      !== undefined && { images }),
       },
     });
 
+    revalidatePath("/");
     return NextResponse.json(rental);
   } catch (error) {
     console.error("[PATCH /api/admin/rentals/[id]]", error);

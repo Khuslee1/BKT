@@ -9,10 +9,10 @@ import type { SlideData } from "@/app/components/admin/AdminEditProvider";
 // ── Default content ───────────────────────────────────────────────
 
 const DEFAULT_STATS = [
-  { num: "6+",   label: "Years of Experience" },
+  { num: "6+", label: "Years of Experience" },
   { num: "200+", label: "Happy Adventurers" },
-  { num: "12",   label: "Unique Routes" },
-  { num: "3",    label: "Sidecar Models" },
+  { num: "12", label: "Unique Routes" },
+  { num: "3", label: "Sidecar Models" },
   { num: "100%", label: "Locally Owned" },
 ];
 
@@ -52,25 +52,35 @@ export default async function HomePage() {
     ? (JSON.parse(statsRaw.value) as { items: typeof DEFAULT_STATS }).items
     : DEFAULT_STATS;
 
-  const about =
-    aboutRaw
-      ? (JSON.parse(aboutRaw.value) as typeof DEFAULT_ABOUT)
-      : DEFAULT_ABOUT;
+  const about = aboutRaw
+    ? (JSON.parse(aboutRaw.value) as typeof DEFAULT_ABOUT)
+    : DEFAULT_ABOUT;
 
   return (
     <main>
       {/* ── HERO CAROUSEL ──────────────────────────────── */}
-      <EditableSection sectionId="hero" data={{ slides: heroSlides }} label="Hero Slides" position="bottom-left">
+      <EditableSection
+        sectionId="hero"
+        data={{ slides: heroSlides }}
+        label="Hero Slides"
+        position="bottom-left"
+      >
         <HeroCarousel slides={heroSlides} />
       </EditableSection>
 
       {/* ── STATS BAR ──────────────────────────────────── */}
-      <EditableSection sectionId="stats" data={{ items: statsItems }} label="Stats">
+      <EditableSection
+        sectionId="stats"
+        data={{ items: statsItems }}
+        label="Stats"
+      >
         <div className="bg-gold">
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between flex-wrap gap-4">
             {statsItems.map((s) => (
               <div key={s.label} className="flex items-center gap-3">
-                <span className="font-display text-2xl text-black">{s.num}</span>
+                <span className="font-display text-2xl text-black">
+                  {s.num}
+                </span>
                 <span className="font-condensed text-[11px] tracking-widest uppercase text-black/70">
                   {s.label}
                 </span>
@@ -81,12 +91,12 @@ export default async function HomePage() {
       </EditableSection>
 
       {/* ── FEATURED TOURS ─────────────────────────────── */}
-      <section id="tours" className="py-24 bg-charcoal">
+      <section id="tours" className="py-24 bg-warm-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between mb-14">
             <div>
               <p className="section-eyebrow mb-3">Our expeditions</p>
-              <h2 className="font-display text-4xl md:text-5xl text-parchment">
+              <h2 className="font-display text-4xl md:text-5xl text-dark-brown">
                 Featured <em className="text-gold">Tours</em>
               </h2>
             </div>
@@ -99,7 +109,9 @@ export default async function HomePage() {
           </div>
 
           {featured.length === 0 ? (
-            <p className="text-stone text-center py-12">No featured tours yet.</p>
+            <p className="text-stone text-center py-12">
+              No featured tours yet.
+            </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {featured.map((tour: Tour, i: number) => (
@@ -124,11 +136,11 @@ export default async function HomePage() {
       </section>
 
       {/* ── SIDECAR RENTAL ─────────────────────────────── */}
-      <section id="rentals" className="py-24 bg-black">
+      <section id="rentals" className="py-24 bg-parchment">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-14">
             <p className="section-eyebrow mb-3">Self-guided freedom</p>
-            <h2 className="font-display text-4xl md:text-5xl text-parchment">
+            <h2 className="font-display text-4xl md:text-5xl text-dark-brown">
               Rent a <em className="text-gold">Sidecar</em>
             </h2>
             <p className="text-stone mt-4 max-w-xl mx-auto leading-relaxed">
@@ -138,7 +150,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {rentals.map((r: Rental) => (
               <EditableSection
                 key={r.id}
@@ -148,16 +160,27 @@ export default async function HomePage() {
               >
                 <div className="card-dark group flex flex-col">
                   <div
-                    className="h-44 flex items-center justify-center text-5xl relative overflow-hidden"
-                    style={{ background: "var(--charcoal-mid)" }}
+                    className="h-44 relative overflow-hidden"
+                    style={{ background: "var(--cream-dark)" }}
                   >
-                    <span className="opacity-10">🏍</span>
+                    {r.images && r.images.length > 0 ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={`/api/blob-image?url=${encodeURIComponent(r.images[0])}`}
+                        alt={r.name}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-5xl opacity-10">🏍</div>
+                    )}
                     <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/5 transition-colors duration-300" />
                   </div>
 
                   <div className="p-6 flex flex-col flex-1">
-                    <p className="section-eyebrow text-[10px] mb-1">Available now</p>
-                    <h3 className="font-display text-xl text-parchment mb-2 group-hover:text-gold transition-colors">
+                    <p className="section-eyebrow text-[10px] mb-1">
+                      Available now
+                    </p>
+                    <h3 className="font-display text-xl text-dark-brown mb-2 group-hover:text-gold transition-colors">
                       {r.name}
                     </h3>
                     <p className="text-stone text-sm leading-relaxed mb-4 flex-1">
@@ -188,8 +211,8 @@ export default async function HomePage() {
           </div>
 
           {/* Features grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"> */}
+          {/* {[
               {
                 icon: "🗺",
                 title: "Route Planning",
@@ -213,27 +236,23 @@ export default async function HomePage() {
             ].map((f) => (
               <div
                 key={f.title}
-                className="flex gap-4 p-5 border border-charcoal-light hover:border-gold/40 transition-colors"
+                className="flex gap-4 p-5 border border-parchment-dark hover:border-gold/40 transition-colors"
               >
                 <span className="text-2xl flex-shrink-0 mt-0.5">{f.icon}</span>
                 <div>
-                  <p className="font-condensed text-parchment tracking-wide mb-1 text-sm">
+                  <p className="font-condensed text-dark-brown tracking-wide mb-1 text-sm">
                     {f.title}
                   </p>
                   <p className="text-stone text-xs leading-relaxed">{f.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </div>*/}
         </div>
       </section>
 
       {/* ── ABOUT ──────────────────────────────────────── */}
-      <EditableSection
-        sectionId="about"
-        data={{ about }}
-        label="About Section"
-      >
+      <EditableSection sectionId="about" data={{ about }} label="About Section">
         <section
           id="about"
           className="py-24 relative overflow-hidden section-cream"
@@ -242,7 +261,8 @@ export default async function HomePage() {
           <div
             className="absolute left-0 top-0 bottom-0 w-px opacity-30"
             style={{
-              background: "linear-gradient(to bottom, transparent, var(--gold), transparent)",
+              background:
+                "linear-gradient(to bottom, transparent, var(--gold), transparent)",
             }}
           />
 
@@ -259,8 +279,7 @@ export default async function HomePage() {
                   className="font-display text-4xl md:text-5xl mb-6"
                   style={{ color: "var(--dark-brown)" }}
                 >
-                  {about.title}{" "}
-                  <em className="text-gold">{about.titleEm}</em>
+                  {about.title} <em className="text-gold">{about.titleEm}</em>
                 </h2>
                 <div
                   className="space-y-4 leading-relaxed"
@@ -334,24 +353,26 @@ export default async function HomePage() {
       </EditableSection>
 
       {/* ── BOOKING CTA ────────────────────────────────── */}
-      <section id="contact" className="py-24 bg-charcoal relative overflow-hidden">
+      <section id="contact" className="py-24 bg-cream relative overflow-hidden">
         <div
           className="absolute top-0 left-0 w-72 h-72 opacity-[0.06]"
           style={{
-            background: "radial-gradient(circle at top left, var(--gold), transparent 70%)",
+            background:
+              "radial-gradient(circle at top left, var(--gold), transparent 70%)",
           }}
         />
         <div
           className="absolute bottom-0 right-0 w-72 h-72 opacity-[0.06]"
           style={{
-            background: "radial-gradient(circle at bottom right, var(--gold), transparent 70%)",
+            background:
+              "radial-gradient(circle at bottom right, var(--gold), transparent 70%)",
           }}
         />
 
         <div className="max-w-4xl mx-auto px-6 relative">
           <div className="text-center mb-12">
             <p className="section-eyebrow mb-4">Ready to ride?</p>
-            <h2 className="font-display text-4xl md:text-6xl text-parchment mb-5">
+            <h2 className="font-display text-4xl md:text-6xl text-dark-brown mb-5">
               Start Your <em className="text-gold">Saga</em>
             </h2>
             <p className="text-stone text-lg leading-relaxed max-w-xl mx-auto">
@@ -361,29 +382,35 @@ export default async function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <div className="border border-charcoal-light p-8 hover:border-gold/50 transition-colors text-center">
+            <div className="border border-parchment-dark p-8 hover:border-gold/50 transition-colors text-center bg-warm-white">
               <div className="text-3xl mb-4">🏔</div>
-              <h3 className="font-display text-xl text-parchment mb-2">
+              <h3 className="font-display text-xl text-dark-brown mb-2">
                 Guided <em className="text-gold">Tour</em>
               </h3>
               <p className="text-stone text-sm leading-relaxed mb-6">
                 Fully guided with accommodation, meals, and an expert local
                 guide. Everything handled for you.
               </p>
-              <Link href="/book?type=tour" className="btn-gold w-full justify-center">
+              <Link
+                href="/book?type=tour"
+                className="btn-gold w-full justify-center"
+              >
                 Book a Tour
               </Link>
             </div>
-            <div className="border border-charcoal-light p-8 hover:border-gold/50 transition-colors text-center">
+            <div className="border border-parchment-dark p-8 hover:border-gold/50 transition-colors text-center bg-warm-white">
               <div className="text-3xl mb-4">🏍</div>
-              <h3 className="font-display text-xl text-parchment mb-2">
+              <h3 className="font-display text-xl text-dark-brown mb-2">
                 Sidecar <em className="text-gold">Rental</em>
               </h3>
               <p className="text-stone text-sm leading-relaxed mb-6">
                 Self-guided freedom with route planning support, camping gear,
                 and 24/7 roadside assistance.
               </p>
-              <Link href="/book?type=rental" className="btn-outline-gold w-full justify-center">
+              <Link
+                href="/book?type=rental"
+                className="btn-outline-gold w-full justify-center"
+              >
                 Reserve a Sidecar
               </Link>
             </div>
@@ -398,7 +425,7 @@ export default async function HomePage() {
               <span>✉</span>
               <span>info@bktravel.mn</span>
             </a>
-            <span className="hidden sm:block text-charcoal-light">|</span>
+            <span className="hidden sm:block text-parchment-dark">|</span>
             <a
               href="tel:+97699001234"
               className="flex items-center gap-2 hover:text-gold transition-colors"
@@ -406,7 +433,7 @@ export default async function HomePage() {
               <span>📞</span>
               <span>+976 9900 1234</span>
             </a>
-            <span className="hidden sm:block text-charcoal-light">|</span>
+            <span className="hidden sm:block text-parchment-dark">|</span>
             <span className="flex items-center gap-2">
               <span>📍</span>
               <span>Ulaanbaatar, Mongolia</span>

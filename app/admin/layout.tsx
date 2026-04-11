@@ -27,7 +27,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen flex" style={{ background: "var(--black)" }}>
+    <div className="min-h-screen flex" style={{ background: "var(--warm-white)" }}>
       <AdminNav email={session.email} />
       <main className="flex-1 ml-64 p-8 pt-10">{children}</main>
     </div>

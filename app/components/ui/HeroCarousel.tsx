@@ -40,9 +40,9 @@ export const DEFAULT_SLIDES: SlideData[] = [
 ];
 
 const SLIDE_BACKGROUNDS = [
-  "linear-gradient(135deg, #1e1608 0%, #17130e 50%, #1a1208 100%)",
-  "linear-gradient(135deg, #16180e 0%, #17130e 50%, #1c1610 100%)",
-  "linear-gradient(135deg, #1a1208 0%, #17130e 50%, #160e06 100%)",
+  "linear-gradient(135deg, #fdf7e8 0%, #f5ebce 50%, #f0e4c0 100%)",
+  "linear-gradient(135deg, #f5ede0 0%, #fdf7e8 50%, #f5ebce 100%)",
+  "linear-gradient(135deg, #f0e4c0 0%, #f5ede0 50%, #fdf7e8 100%)",
 ];
 
 // ── Component ─────────────────────────────────────────────────────
@@ -104,7 +104,7 @@ export default function HeroCarousel({
 
       {/* Subtle gold grid overlay */}
       <div
-        className="absolute inset-0 opacity-[0.028] pointer-events-none"
+        className="absolute inset-0 opacity-[0.07] pointer-events-none"
         style={{
           backgroundImage: `linear-gradient(var(--gold) 1px, transparent 1px),
                            linear-gradient(90deg, var(--gold) 1px, transparent 1px)`,
@@ -116,7 +116,33 @@ export default function HeroCarousel({
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(201,144,42,0.06) 0%, transparent 70%)",
+          background:
+            "radial-gradient(circle, rgba(201,144,42,0.12) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* Mongolian ornament — bottom-left */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/pattern.png"
+        alt=""
+        className="absolute bottom-10 left-2 w-64 pointer-events-none select-none rotate-180"
+        style={{
+          opacity: 0.25,
+          filter: "sepia(1) saturate(4) hue-rotate(5deg) brightness(0.75)",
+        }}
+      />
+
+      {/* Mongolian ornament — top-right (flipped) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/pattern.png"
+        alt=""
+        className="absolute top-2 right-2 w-64 pointer-events-none select-none  rotate-180 "
+        style={{
+          opacity: 0.25,
+          transform: "rotate(180deg)",
+          filter: "sepia(1) saturate(4) hue-rotate(5deg) brightness(0.75)",
         }}
       />
 
@@ -128,7 +154,7 @@ export default function HeroCarousel({
             <p className="section-eyebrow animate-fade-up delay-100 mb-6">
               {slide.eyebrow}
             </p>
-            <h1 className="font-display text-5xl md:text-7xl text-parchment leading-[1.05] mb-6 animate-fade-up delay-200">
+            <h1 className="font-display text-5xl md:text-7xl text-dark-brown leading-[1.05] mb-6 animate-fade-up delay-200">
               {slide.heading}
               <em className="block text-gold not-italic">{slide.sub}</em>
             </h1>
@@ -146,12 +172,12 @@ export default function HeroCarousel({
           </div>
 
           {/* Right — stats card */}
-          <div className="animate-fade-up delay-500">
+          {/* <div className="animate-fade-up delay-500">
             <div
               className="backdrop-blur-sm p-8"
               style={{
-                background: "rgba(35,30,18,0.7)",
-                border: "1px solid rgba(201,144,42,0.15)",
+                background: "rgba(255,255,255,0.65)",
+                border: "1px solid rgba(201,144,42,0.35)",
               }}
             >
               <p className="section-eyebrow mb-6">Why ride with BKT</p>
@@ -163,20 +189,22 @@ export default function HeroCarousel({
                   { num: "100%", label: "Local & authentic" },
                 ].map((s) => (
                   <div key={s.label} className="border-l-2 border-gold pl-4">
-                    <div className="font-display text-3xl text-gold">{s.num}</div>
-                    <div className="font-condensed text-stone text-xs tracking-wider uppercase mt-1">
+                    <div className="font-display text-3xl text-gold">
+                      {s.num}
+                    </div>
+                    <div className="font-condensed text-ash text-xs tracking-wider uppercase mt-1">
                       {s.label}
                     </div>
                   </div>
                 ))}
               </div>
               <div className="gold-line my-6" />
-              <p className="text-stone text-xs leading-relaxed italic font-display">
+              <p className="text-ash text-xs leading-relaxed italic font-display">
                 "One of the last places on earth where it feels like you're
                 discovering unexplored lands."
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -200,7 +228,7 @@ export default function HeroCarousel({
             ))}
           </div>
 
-          <span className="font-condensed text-xs tracking-widest text-stone">
+          <span className="font-condensed text-xs tracking-widest text-ash">
             {String(active + 1).padStart(2, "0")} /{" "}
             {String(slidesData.length).padStart(2, "0")}
           </span>
@@ -208,13 +236,13 @@ export default function HeroCarousel({
           <div className="flex gap-2">
             <button
               onClick={prev}
-              className="w-10 h-10 border border-stone/30 hover:border-gold hover:text-gold text-stone transition-colors flex items-center justify-center font-condensed text-sm"
+              className="w-10 h-10 border border-ash/30 hover:border-gold hover:text-gold text-ash transition-colors flex items-center justify-center font-condensed text-sm"
             >
               ←
             </button>
             <button
               onClick={next}
-              className="w-10 h-10 border border-stone/30 hover:border-gold hover:text-gold text-stone transition-colors flex items-center justify-center font-condensed text-sm"
+              className="w-10 h-10 border border-ash/30 hover:border-gold hover:text-gold text-ash transition-colors flex items-center justify-center font-condensed text-sm"
             >
               →
             </button>
@@ -223,7 +251,7 @@ export default function HeroCarousel({
 
         {/* Progress bar */}
         <div className="max-w-7xl mx-auto mt-4">
-          <div className="h-px bg-charcoal-light w-full">
+          <div className="h-px bg-parchment-dark w-full">
             <div
               className="h-px bg-gold transition-none"
               style={{ width: `${progress}%` }}

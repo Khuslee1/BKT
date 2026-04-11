@@ -5,12 +5,14 @@ import { Tour } from "@/lib/types";
 async function getTour(slug: string): Promise<Tour | null> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/tours/${slug}`,
-    {
-      cache: "no-store",
-    },
+    { cache: "no-store" },
   );
   if (!res.ok) return null;
   return res.json();
+}
+
+function blobSrc(url: string) {
+  return `/api/blob-image?url=${encodeURIComponent(url)}`;
 }
 
 export default async function TourDetailPage({
@@ -24,35 +26,38 @@ export default async function TourDetailPage({
   if (!tour) notFound();
 
   const primaryImage = tour.images?.[0];
+  const galleryImages = tour.images?.slice(1, 5) ?? [];
 
   return (
-    <main className="min-h-screen" style={{ background: "var(--black)" }}>
+    <main className="min-h-screen" style={{ background: "var(--warm-white)" }}>
       {/* ── HERO ── */}
       <section className="relative h-[60vh] min-h-[480px] flex items-end">
         {primaryImage ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img
-            src={primaryImage.url}
-            alt={tour.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-50"
+            src={blobSrc(primaryImage.url)}
+            alt={primaryImage.alt ?? tour.title}
+            className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
           <div
             className="absolute inset-0"
-            style={{ background: "var(--charcoal)" }}
+            style={{ background: "var(--parchment)" }}
           />
         )}
+        {/* gradient fades into warm-white */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to top, var(--black) 30%, transparent 100%)",
+              "linear-gradient(to top, rgba(245,235,206,1) 0%, rgba(245,235,206,0.6) 40%, rgba(0,0,0,0.4) 100%)",
           }}
         />
         <div className="relative max-w-7xl mx-auto px-6 pb-12 w-full">
           <Link
             href="/tours"
-            className="font-condensed text-xs tracking-widest uppercase block mb-6 transition-colors"
-            style={{ color: "var(--stone)" }}
+            className="font-condensed text-xs tracking-widest uppercase block mb-6 transition-colors hover:text-gold"
+            style={{ color: "var(--dark-brown)" }}
           >
             ← All Tours
           </Link>
@@ -65,43 +70,125 @@ export default async function TourDetailPage({
             </span>
             <span
               className="font-condensed text-xs tracking-wider uppercase"
-              style={{ color: "var(--stone)" }}
+              style={{ color: "var(--dark-brown)" }}
             >
               {tour.days} days · {tour.region}
             </span>
           </div>
           <h1
             className="font-display text-5xl md:text-6xl"
-            style={{ color: "var(--parchment)" }}
+            style={{ color: "var(--dark-brown)" }}
           >
             {tour.title}
           </h1>
+          {tour.subtitle && (
+            <p
+              className="mt-2 font-condensed text-sm tracking-wide"
+              style={{ color: "var(--ash)" }}
+            >
+              {tour.subtitle}
+            </p>
+          )}
         </div>
       </section>
 
       {/* ── BODY + STICKY BOOKING PANEL ── */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
           {/* Left: details */}
           <div className="lg:col-span-2 flex flex-col gap-10">
+
+            {/* Description */}
             <p
-              className="text-lg leading-relaxed"
-              style={{ color: "var(--stone)" }}
+              className="text-base leading-relaxed"
+              style={{ color: "var(--ash)" }}
             >
-              {tour.summary}
+              {(tour as unknown as { description?: string }).description ?? tour.summary}
             </p>
 
             {/* Image gallery */}
-            {tour.images && tour.images.length > 1 && (
+            {galleryImages.length > 0 && (
               <div className="grid grid-cols-2 gap-3">
-                {tour.images.slice(1, 5).map((img, i) => (
+                {galleryImages.map((img, i) => (
+                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img
                     key={i}
-                    src={img.url}
-                    alt={`${tour.title} ${i + 2}`}
+                    src={blobSrc(img.url)}
+                    alt={img.alt ?? `${tour.title} ${i + 2}`}
                     className="w-full aspect-video object-cover"
+                    style={{ border: "1px solid rgba(61,46,24,0.08)" }}
                   />
                 ))}
+              </div>
+            )}
+
+            {/* Highlights */}
+            {tour.highlights && tour.highlights.length > 0 && (
+              <div>
+                <h2
+                  className="font-condensed text-sm tracking-widest uppercase mb-4"
+                  style={{ color: "var(--dark-brown)" }}
+                >
+                  Highlights
+                </h2>
+                <ul className="flex flex-col gap-2">
+                  {tour.highlights.map((h, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span style={{ color: "var(--gold)" }}>—</span>
+                      <span className="text-sm" style={{ color: "var(--ash)" }}>
+                        {h}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Includes / Excludes */}
+            {((tour.includes && tour.includes.length > 0) ||
+              (tour.excludes && tour.excludes.length > 0)) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {tour.includes && tour.includes.length > 0 && (
+                  <div>
+                    <h2
+                      className="font-condensed text-sm tracking-widest uppercase mb-4"
+                      style={{ color: "var(--dark-brown)" }}
+                    >
+                      Included
+                    </h2>
+                    <ul className="flex flex-col gap-2">
+                      {tour.includes.map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span style={{ color: "var(--gold)" }}>✓</span>
+                          <span className="text-sm" style={{ color: "var(--ash)" }}>
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {tour.excludes && tour.excludes.length > 0 && (
+                  <div>
+                    <h2
+                      className="font-condensed text-sm tracking-widest uppercase mb-4"
+                      style={{ color: "var(--dark-brown)" }}
+                    >
+                      Not Included
+                    </h2>
+                    <ul className="flex flex-col gap-2">
+                      {tour.excludes.map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span style={{ color: "var(--stone)" }}>✕</span>
+                          <span className="text-sm" style={{ color: "var(--ash)" }}>
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -111,8 +198,8 @@ export default async function TourDetailPage({
             <div
               className="sticky top-28 p-6 flex flex-col gap-5"
               style={{
-                border: "1px solid var(--charcoal-light)",
-                background: "var(--charcoal)",
+                background: "var(--cream)",
+                border: "1px solid rgba(61,46,24,0.12)",
               }}
             >
               <div>
@@ -137,13 +224,13 @@ export default async function TourDetailPage({
 
               <div
                 className="flex flex-col gap-2 text-sm"
-                style={{ color: "var(--stone)" }}
+                style={{ color: "var(--ash)" }}
               >
                 <div className="flex justify-between">
                   <span className="font-condensed text-xs tracking-wider uppercase">
                     Duration
                   </span>
-                  <span style={{ color: "var(--parchment)" }}>
+                  <span style={{ color: "var(--dark-brown)" }}>
                     {tour.days} days
                   </span>
                 </div>
@@ -151,7 +238,7 @@ export default async function TourDetailPage({
                   <span className="font-condensed text-xs tracking-wider uppercase">
                     Region
                   </span>
-                  <span style={{ color: "var(--parchment)" }}>
+                  <span style={{ color: "var(--dark-brown)" }}>
                     {tour.region}
                   </span>
                 </div>
@@ -159,10 +246,20 @@ export default async function TourDetailPage({
                   <span className="font-condensed text-xs tracking-wider uppercase">
                     Difficulty
                   </span>
-                  <span style={{ color: "var(--parchment)" }}>
+                  <span style={{ color: "var(--dark-brown)" }}>
                     {tour.difficulty}
                   </span>
                 </div>
+                {tour.maxGroupSize && (
+                  <div className="flex justify-between">
+                    <span className="font-condensed text-xs tracking-wider uppercase">
+                      Group Size
+                    </span>
+                    <span style={{ color: "var(--dark-brown)" }}>
+                      Max {tour.maxGroupSize}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <Link

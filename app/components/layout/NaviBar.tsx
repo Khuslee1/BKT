@@ -23,7 +23,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-black/95 backdrop-blur-sm border-b border-charcoal-light"
+          ? "bg-warm-white/95 backdrop-blur-sm border-b border-parchment-dark"
           : "bg-transparent"
       }`}
     >
@@ -36,10 +36,10 @@ export default function Navbar() {
             </span>
           </div>
           <div>
-            <div className="font-display text-parchment text-sm leading-none">
+            <div className="font-display text-dark-brown text-sm leading-none">
               Bulgan Khangai
             </div>
-            <div className="font-condensed text-stone text-[10px] tracking-[0.2em] uppercase mt-0.5">
+            <div className="font-condensed text-ash text-[10px] tracking-[0.2em] uppercase mt-0.5">
               Travel · Mongolia
             </div>
           </div>
@@ -51,7 +51,7 @@ export default function Navbar() {
             <Link
               key={l.href}
               href={l.href}
-              className="font-condensed text-sm tracking-[0.15em] uppercase text-stone hover:text-gold transition-colors"
+              className="font-condensed text-sm tracking-[0.15em] uppercase text-ash hover:text-gold transition-colors"
             >
               {l.label}
             </Link>
@@ -71,25 +71,25 @@ export default function Navbar() {
           className="md:hidden flex flex-col gap-1.5 p-2"
         >
           <span
-            className={`block w-6 h-px bg-parchment transition-all ${open ? "rotate-45 translate-y-2" : ""}`}
+            className={`block w-6 h-px bg-dark-brown transition-all ${open ? "rotate-45 translate-y-2" : ""}`}
           />
           <span
-            className={`block w-6 h-px bg-parchment transition-all ${open ? "opacity-0" : ""}`}
+            className={`block w-6 h-px bg-dark-brown transition-all ${open ? "opacity-0" : ""}`}
           />
           <span
-            className={`block w-6 h-px bg-parchment transition-all ${open ? "-rotate-45 -translate-y-2" : ""}`}
+            className={`block w-6 h-px bg-dark-brown transition-all ${open ? "-rotate-45 -translate-y-2" : ""}`}
           />
         </button>
       </div>
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-charcoal border-t border-charcoal-light px-6 py-6 flex flex-col gap-5">
+        <div className="md:hidden bg-cream border-t border-parchment-dark px-6 py-6 flex flex-col gap-5">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="font-condensed text-sm tracking-[0.15em] uppercase text-stone hover:text-gold"
+              className="font-condensed text-sm tracking-[0.15em] uppercase text-ash hover:text-gold"
               onClick={() => setOpen(false)}
             >
               {l.label}

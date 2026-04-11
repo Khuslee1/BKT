@@ -10,7 +10,10 @@ export default async function AdminTourEditPage({
 }) {
   const { id } = await params;
 
-  const tour = await prisma.tour.findUnique({ where: { id } });
+  const tour = await prisma.tour.findUnique({
+    where: { id },
+    include: { images: { orderBy: { order: "asc" } } },
+  });
   if (!tour) notFound();
 
   return (
@@ -18,12 +21,12 @@ export default async function AdminTourEditPage({
       <div className="mb-8">
         <Link
           href="/admin/tours"
-          className="font-condensed text-xs tracking-widest uppercase text-stone hover:text-gold transition-colors block mb-3"
+          className="font-condensed text-xs tracking-widest uppercase text-ash hover:text-gold transition-colors block mb-3"
         >
           ← Back to Tours
         </Link>
         <p className="section-eyebrow mb-2">Edit</p>
-        <h1 className="font-display text-3xl text-parchment">{tour.title}</h1>
+        <h1 className="font-display text-3xl text-dark-brown">{tour.title}</h1>
         <p className="text-stone text-xs font-mono mt-1">{tour.slug}</p>
       </div>
 
@@ -45,6 +48,11 @@ export default async function AdminTourEditPage({
           highlights: tour.highlights,
           includes: tour.includes,
           excludes: tour.excludes,
+          images: tour.images.map((img) => ({
+            id: img.id,
+            url: img.url,
+            alt: img.alt ?? "",
+          })),
         }}
       />
     </div>

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
@@ -28,5 +29,6 @@ export async function PATCH(
     create: { key, value, type: "json" },
   });
 
+  revalidatePath("/");
   return NextResponse.json(content);
 }

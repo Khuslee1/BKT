@@ -14,11 +14,20 @@ export default function TourCard({
       href={`/tours/${tour.slug}`}
       className="card-dark group block overflow-hidden"
     >
-      {/* Image placeholder */}
-      <div className="relative h-52 bg-charcoal-mid overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-10">
-          🏔
-        </div>
+      {/* Image */}
+      <div className="relative h-52 bg-cream-dark overflow-hidden">
+        {tour.images?.[0] ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={`/api/blob-image?url=${encodeURIComponent(tour.images[0].url)}`}
+            alt={tour.images[0].alt ?? tour.title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-10">
+            🏔
+          </div>
+        )}
         <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/5 transition-colors duration-300" />
 
         {/* Badges */}
@@ -36,11 +45,11 @@ export default function TourCard({
         </div>
 
         {/* Days */}
-        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm px-2.5 py-1 text-center">
+        <div className="absolute top-3 right-3 bg-warm-white/80 backdrop-blur-sm px-2.5 py-1 text-center">
           <div className="font-display text-gold text-lg leading-none">
             {tour.days}
           </div>
-          <div className="font-condensed text-stone text-[9px] tracking-widest uppercase">
+          <div className="font-condensed text-ash text-[9px] tracking-widest uppercase">
             days
           </div>
         </div>
@@ -51,7 +60,7 @@ export default function TourCard({
         <p className="section-eyebrow text-[10px] mb-2">
           {tour.region} · {tour.type}
         </p>
-        <h3 className="font-display text-parchment text-xl mb-1 group-hover:text-gold transition-colors">
+        <h3 className="font-display text-dark-brown text-xl mb-1 group-hover:text-gold transition-colors">
           {tour.title}
         </h3>
         <p className="text-stone text-sm leading-relaxed line-clamp-2 mb-4">
@@ -62,7 +71,7 @@ export default function TourCard({
           {tour.highlights?.slice(0, 3).map((h) => (
             <span
               key={h}
-              className="text-[10px] font-condensed uppercase tracking-wider text-stone border border-charcoal-light px-2 py-0.5"
+              className="text-[10px] font-condensed uppercase tracking-wider text-ash border border-parchment-dark px-2 py-0.5"
             >
               {h}
             </span>

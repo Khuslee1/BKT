@@ -18,10 +18,10 @@ export default function AdminNav({ email }: { email: string }) {
   const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
       href={href}
-      className="flex items-center px-4 py-2.5 font-condensed text-sm tracking-wide uppercase transition-all duration-200 rounded-sm"
+      className="flex items-center px-4 py-2.5 font-condensed text-sm tracking-wide uppercase transition-all duration-200"
       style={{
-        color: isActive(href) ? "var(--gold)" : "var(--stone)",
-        background: isActive(href) ? "rgba(201,144,42,0.08)" : "transparent",
+        color: isActive(href) ? "var(--gold)" : "var(--parchment-dark)",
+        background: isActive(href) ? "rgba(201,144,42,0.12)" : "transparent",
         borderLeft: isActive(href) ? "2px solid var(--gold)" : "2px solid transparent",
       }}
     >
@@ -33,14 +33,14 @@ export default function AdminNav({ email }: { email: string }) {
     <aside
       className="fixed top-0 left-0 h-screen w-64 flex flex-col"
       style={{
-        background: "var(--charcoal)",
-        borderRight: "1px solid rgba(255,255,255,0.05)",
+        background: "var(--dark-brown)",
+        borderRight: "1px solid rgba(255,255,255,0.06)",
       }}
     >
       {/* Logo / Brand */}
       <div
         className="p-6"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
         <div className="flex items-center gap-3 mb-1">
           <div
@@ -55,10 +55,10 @@ export default function AdminNav({ email }: { email: string }) {
             </span>
           </div>
           <div>
-            <p className="font-display text-base text-parchment leading-none">
+            <p className="font-display text-base leading-none" style={{ color: "var(--parchment)" }}>
               Sidecar <em className="text-gold">Saga</em>
             </p>
-            <p className="font-condensed text-[9px] tracking-widest uppercase text-stone mt-0.5">
+            <p className="font-condensed text-[9px] tracking-widest uppercase mt-0.5" style={{ color: "var(--stone)" }}>
               Admin Panel
             </p>
           </div>
@@ -67,14 +67,12 @@ export default function AdminNav({ email }: { email: string }) {
 
       {/* Navigation */}
       <nav className="flex-1 p-4 flex flex-col gap-1 overflow-y-auto">
-        {/* Main */}
         <NavLink href="/admin" label="Dashboard" />
 
-        {/* Edit Content section */}
         <div className="mt-5 mb-2 px-4">
           <p
             className="font-condensed text-[9px] tracking-widest uppercase"
-            style={{ color: "rgba(138,125,104,0.5)" }}
+            style={{ color: "rgba(245,235,206,0.3)" }}
           >
             Edit Content
           </p>
@@ -86,24 +84,25 @@ export default function AdminNav({ email }: { email: string }) {
       {/* Sign out */}
       <div
         className="p-4"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
       >
-        <p className="text-stone text-xs truncate mb-3 px-2">{email}</p>
+        <p className="font-condensed text-xs truncate mb-3 px-2" style={{ color: "var(--stone)" }}>
+          {email}
+        </p>
         <button
           onClick={handleLogout}
           className="w-full px-4 py-2.5 font-condensed text-xs tracking-widest uppercase transition-all duration-200 text-left"
           style={{
-            color: "var(--stone)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            color: "var(--parchment-dark)",
+            border: "1px solid rgba(255,255,255,0.1)",
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.borderColor = "var(--gold)";
             (e.currentTarget as HTMLElement).style.color = "var(--gold)";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor =
-              "rgba(255,255,255,0.08)";
-            (e.currentTarget as HTMLElement).style.color = "var(--stone)";
+            (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.1)";
+            (e.currentTarget as HTMLElement).style.color = "var(--parchment-dark)";
           }}
         >
           ← Sign Out
