@@ -245,11 +245,11 @@ export default function ToursClient({
                           </span>
                         </div>
                         <Link
-                          href={`/book?type=rental&rental=${r.id}`}
+                          href={`/rentals/${r.id}`}
                           className="font-condensed text-xs tracking-widest uppercase px-4 py-2 border transition-all duration-200 hover:bg-gold hover:text-black"
                           style={{ color: "var(--gold)", borderColor: "rgba(201,144,42,0.4)" }}
                         >
-                          Reserve →
+                          Details →
                         </Link>
                       </div>
                     </div>

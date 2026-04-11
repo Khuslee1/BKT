@@ -198,10 +198,10 @@ export default async function HomePage() {
                         <span className="text-stone text-xs ml-1">/ day</span>
                       </div>
                       <Link
-                        href={`/book?type=rental&rental=${r.id}`}
+                        href={`/rentals/${r.id}`}
                         className="font-condensed text-xs tracking-widest uppercase text-gold border border-gold/40 px-3 py-1.5 group-hover:bg-gold group-hover:text-black transition-all duration-200"
                       >
-                        Reserve →
+                        Details →
                       </Link>
                     </div>
                   </div>

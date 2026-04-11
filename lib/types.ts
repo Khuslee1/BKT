@@ -21,8 +21,11 @@ export interface Tour {
 export interface Rental {
   id: string;
   name: string;
+  type?: string;
   description: string;
   pricePerDay: number;
+  available?: boolean;
+  specs?: Record<string, string>;
   imageUrl?: string | null;
   images?: string[];
 }
