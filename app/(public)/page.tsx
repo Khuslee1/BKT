@@ -171,7 +171,9 @@ export default async function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-5xl opacity-10">🏍</div>
+                      <div className="absolute inset-0 flex items-center justify-center text-5xl opacity-10">
+                        🏍
+                      </div>
                     )}
                     <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/5 transition-colors duration-300" />
                   </div>

@@ -33,7 +33,7 @@ export default async function RentalDetailPage({
 
   const primaryImage = rental.images?.[0];
   const galleryImages = rental.images?.slice(1, 5) ?? [];
-  const specs = rental.specs ?? {};
+  const specs = (rental.specs ?? {}) as Record<string, string>;
   const hasSpecs = Object.keys(specs).length > 0;
 
   return (
